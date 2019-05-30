@@ -1,1 +1,124 @@
+import arcade
+# import os
+#
+# file_path = os.path.dirname(os.path.abspath(__file__))
+# os.chdir(file_path)
 
+
+WIDTH = 800
+HEIGHT = 450
+
+# player = arcade.Sprite('images/platformPack_tile001.png', center_x=WIDTH/2, center_y=HEIGHT/2, scale=0.5)
+
+# Screens
+current_screen = "menu"
+
+# Player
+player_x = 30
+player_y = 210
+player_width = 5
+player_height = 10
+
+
+def update(delta_time):
+    pass
+
+
+def on_draw():
+    arcade.start_render()
+    # Draw in here...
+
+    if current_screen == "menu":
+        menu()
+    elif current_screen == "instructions":
+        instructions()
+    elif current_screen == "game":
+        game()
+
+
+
+
+def on_key_press(key, modifiers):
+    global current_screen
+
+    if current_screen == "menu":
+        if key == arcade.key.P:
+            current_screen = "game"
+        elif key == arcade.key.I:
+            current_screen = "instructions"
+        elif key == arcade.key.ESCAPE:
+            exit()
+    elif current_screen == "instructions":
+        if key == arcade.key.ESCAPE:
+            current_screen = "menu"
+    elif current_screen == "game":
+        if key == arcade.key.ESCAPE:
+            current_screen = "menu"
+
+
+def on_key_release(key, modifiers):
+    pass
+
+
+def on_mouse_press(x, y, button, modifiers):
+    pass
+
+
+def setup():
+    arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
+    arcade.set_background_color(arcade.color.WHITE)
+    arcade.schedule(update, 1/60)
+
+    # Override arcade window methods
+    window = arcade.get_window()
+    window.on_draw = on_draw
+    window.on_key_press = on_key_press
+    window.on_key_release = on_key_release
+    window.on_mouse_press = on_mouse_press
+
+    arcade.run()
+
+def menu():
+    arcade.set_background_color(arcade.color.BLACK)
+    arcade.draw_text("A Hard Game", WIDTH/2, HEIGHT/2, arcade.color.WHEAT,
+                     font_size=30, bold=True, anchor_x="left")
+    arcade.draw_text("P to Play", WIDTH/2, HEIGHT/2 - 50, arcade.color.WHITE,
+                     font_size=25, bold=True, anchor_x="left")
+    arcade.draw_text("I for Instructions", WIDTH/2, HEIGHT/2 - 90, arcade.color.WHITE,
+                     font_size=25, bold=True, anchor_x="left")
+    arcade.draw_text("ESC to End Game", WIDTH/2, HEIGHT/2 - 130, arcade.color.WHITE,
+                     font_size=25, bold=True, anchor_x="left")
+
+def instructions():
+    arcade.set_background_color(arcade.color.BLACK)
+    arcade.draw_text("How To Play", 20, HEIGHT - 50, arcade.color.WHITE,
+                     font_size=30, bold= True, anchor_x="left")
+    arcade.draw_text("""Your goal is to make it to the end without losing all your lives by 
+avoiding the spikes and pitfalls.
+
+Use the Left and Right arrow keys to move, and space bar to jump.
+To end the game and return to menu, press the ESC button.""",
+                     20, HEIGHT - 100, arcade.color.WHITE, font_size=15, anchor_x="left")
+
+def game():
+    pass
+
+def game_screen1():     #???
+    arcade.set_background_color(arcade.color.WHITE_SMOKE)
+    # Playe
+    arcade.draw_ellipse_filled(player_x, player_y, player_width, player_height,
+                               arcade.color.YELLOW)
+
+    # Ground/Walls
+    arcade.draw_xywh_rectangle_filled(0, 0, WIDTH, 200, arcade.color.DARK_BROWN)
+
+    # Platforms
+
+
+    # Spikes - sage colour
+    # arcade.draw_triangle_filled()
+
+
+
+if __name__ == '__main__':
+    setup()
