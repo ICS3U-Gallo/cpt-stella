@@ -1,4 +1,6 @@
 import arcade
+
+
 # import os
 #
 # file_path = os.path.dirname(os.path.abspath(__file__))
@@ -19,9 +21,23 @@ player_y = 210
 player_width = 5
 player_height = 10
 
+# Key Pressed
+up_pressed = False
+right_pressed = False
+left_pressed = False
+
+
 
 def update(delta_time):
-    pass
+    global player_x, player_y
+
+    if up_pressed == True:
+        player_y += 5
+    elif right_pressed == True:
+        player_x += 3
+    elif left_pressed == True:
+        player_x -= 3
+
 
 
 def on_draw():
@@ -40,7 +56,9 @@ def on_draw():
 
 def on_key_press(key, modifiers):
     global current_screen
+    global up_pressed, right_pressed, left_pressed
 
+    # Moving Between Screens
     if current_screen == "menu":
         if key == arcade.key.P:
             current_screen = "game"
@@ -55,9 +73,25 @@ def on_key_press(key, modifiers):
         if key == arcade.key.ESCAPE:
             current_screen = "menu"
 
+    if current_screen == "game":
+        if key == arcade.key.UP:
+            up_pressed = True
+        elif key == arcade.key.RIGHT:
+            right_pressed = True
+        elif key == arcade.key.LEFT:
+            left_pressed = True
+
 
 def on_key_release(key, modifiers):
-    pass
+    global up_pressed, right_pressed, left_pressed
+
+    if current_screen == "game":
+        if key == arcade.key.UP:
+            up_pressed = False
+        elif key == arcade.key.RIGHT:
+            right_pressed = False
+        elif key == arcade.key.LEFT:
+            left_pressed = False
 
 
 def on_mouse_press(x, y, button, modifiers):
@@ -101,11 +135,9 @@ To end the game and return to menu, press the ESC button.""",
                      20, HEIGHT - 100, arcade.color.WHITE, font_size=15, anchor_x="left")
 
 def game():
-    pass
-
-def game_screen1():     #???
     arcade.set_background_color(arcade.color.WHITE_SMOKE)
-    # Playe
+
+    # Player
     arcade.draw_ellipse_filled(player_x, player_y, player_width, player_height,
                                arcade.color.YELLOW)
 
