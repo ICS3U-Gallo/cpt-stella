@@ -1,16 +1,14 @@
+from pyglet.window.key import KeyStateHandler
 import arcade
-
-
-# import os
-#
-# file_path = os.path.dirname(os.path.abspath(__file__))
-# os.chdir(file_path)
 
 
 WIDTH = 800
 HEIGHT = 450
 
-# player = arcade.Sprite('images/platformPack_tile001.png', center_x=WIDTH/2, center_y=HEIGHT/2, scale=0.5)
+
+# Keys Pressed
+keys_pressed = KeyStateHandler()
+
 
 # Screens
 current_screen = "menu"
@@ -21,7 +19,7 @@ player_y = 210
 player_width = 5
 player_height = 10
 player_speedx = 3
-player_speedy = 7
+player_jump = 7
 
 # Ground
 ground_rect_x1 = 0
@@ -35,10 +33,6 @@ ground_rect_height1 = 200
 # Platforms
 
 
-# Key Pressed
-up_pressed = False
-right_pressed = False
-left_pressed = False
 
 # Gravity
 gravity = 3
@@ -46,15 +40,35 @@ gravity = 3
 
 
 def update(delta_time):
-    global player_x, player_y, player_speedy, player_speedx
+    global player_x, player_y, player_jump, player_speedx
+    global current_screen
+    global up_pressed, right_pressed, left_pressed
 
-    # if on_ground == True:
-    if up_pressed == True:
-        player_y += player_speedy
-    if right_pressed == True:
-        player_x += player_speedx
-    elif left_pressed == True:
-        player_x -= player_speedx
+    # Moving Between Screens
+    if current_screen == "menu":
+        if keys_pressed[arcade.key.P]:
+            current_screen = "game"
+        elif keys_pressed[arcade.key.I]:
+            current_screen = "instructions"
+        elif keys_pressed[arcade.key.ESCAPE]:
+            exit()
+    elif current_screen == "instructions":
+        if keys_pressed[arcade.key.BACKSPACE]:
+            current_screen = "menu"
+    elif current_screen == "game":
+        if keys_pressed[arcade.key.BACKSPACE]:
+            current_screen = "menu"
+
+    # Player Movement
+    if current_screen == "game":
+        if keys_pressed[arcade.key.UP]:
+            player_y += player_jump
+
+        if keys_pressed[arcade.key.RIGHT]:
+            player_x += player_speedx
+        elif keys_pressed[arcade.key.LEFT]:
+            player_x -= player_speedx
+
 
 
 
@@ -72,46 +86,6 @@ def on_draw():
 
 
 
-def on_key_press(key, modifiers):
-    global current_screen
-    global up_pressed, right_pressed, left_pressed
-
-    # Moving Between Screens
-    if current_screen == "menu":
-        if key == arcade.key.P:
-            current_screen = "game"
-        elif key == arcade.key.I:
-            current_screen = "instructions"
-        elif key == arcade.key.ESCAPE:
-            exit()
-    elif current_screen == "instructions":
-        if key == arcade.key.ESCAPE:
-            current_screen = "menu"
-    elif current_screen == "game":
-        if key == arcade.key.ESCAPE:
-            current_screen = "menu"
-
-    if current_screen == "game":
-        if key == arcade.key.UP:
-            up_pressed = True
-        elif key == arcade.key.RIGHT:
-            right_pressed = True
-        elif key == arcade.key.LEFT:
-            left_pressed = True
-
-
-def on_key_release(key, modifiers):
-    global up_pressed, right_pressed, left_pressed
-
-    if current_screen == "game":
-        if key == arcade.key.UP:
-            up_pressed = False
-        elif key == arcade.key.RIGHT:
-            right_pressed = False
-        elif key == arcade.key.LEFT:
-            left_pressed = False
-
-
 def on_mouse_press(x, y, button, modifiers):
     pass
 
@@ -124,9 +98,11 @@ def setup():
     # Override arcade window methods
     window = arcade.get_window()
     window.on_draw = on_draw
-    window.on_key_press = on_key_press
-    window.on_key_release = on_key_release
-    window.on_mouse_press = on_mouse_press
+    window.push_handlers(keys_pressed)
+
+    # window.on_key_press = on_key_press
+    # window.on_key_release = on_key_release
+    # window.on_mouse_press = on_mouse_press
 
     arcade.run()
 
