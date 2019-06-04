@@ -36,7 +36,7 @@ ground_rect_height1 = 200
 
 # Gravity
 gravity = 3
-# on_ground = True
+on_ground = True
 
 
 def update(delta_time):
@@ -61,8 +61,9 @@ def update(delta_time):
 
     # Player Movement
     if current_screen == "game":
-        if keys_pressed[arcade.key.UP]:
-            player_y += player_jump
+        if on_ground == True:
+            if keys_pressed[arcade.key.UP]:
+                player_y += player_jump
 
         if keys_pressed[arcade.key.RIGHT]:
             player_x += player_speedx
@@ -143,10 +144,11 @@ def game():
                                       ground_rect_width1, ground_rect_height1,
                                       arcade.color.DARK_BROWN)
 
-    # if player_y + player_height == ground_rect_height1:
-    #     on_ground = True
-    # else:
-    #     on_ground = False
+    # Check if Player is on Ground
+    if player_y + player_height == ground_rect_y1:
+        on_ground = True
+    else:
+        on_ground = False
 
 
     # Walls
