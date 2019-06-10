@@ -1,14 +1,11 @@
 from pyglet.window.key import KeyStateHandler
 import arcade
 
-
 WIDTH = 800
 HEIGHT = 450
 
-
 # Keys Pressed
 keys_pressed = KeyStateHandler()
-
 
 # Screens
 current_screen = "menu"
@@ -36,11 +33,27 @@ ground_rect_height1 = 200
 # Spikes
 spike1_x1 = 255
 
-
 # Gravity
 gravity = 30
 on_ground = True
 
+
+
+def setup():
+    arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
+    arcade.set_background_color(arcade.color.WHITE)
+    arcade.schedule(update, 1 / 60)
+
+    # Override arcade window methods
+    window = arcade.get_window()
+    window.on_draw = on_draw
+    window.push_handlers(keys_pressed)
+
+    # window.on_key_press = on_key_press
+    # window.on_key_release = on_key_release
+    # window.on_mouse_press = on_mouse_press
+
+    arcade.run()
 
 def update(delta_time):
     global player_x, player_y, player_speedy, player_speedx, velocity
@@ -78,8 +91,6 @@ def update(delta_time):
             player_x -= player_speedx
 
 
-
-
 def on_draw():
     arcade.start_render()
     # Draw in here...
@@ -92,49 +103,33 @@ def on_draw():
         game_screen1()
 
 
-
-
 def on_mouse_press(x, y, button, modifiers):
     pass
 
 
-def setup():
-    arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
-    arcade.set_background_color(arcade.color.WHITE)
-    arcade.schedule(update, 1/60)
-
-    # Override arcade window methods
-    window = arcade.get_window()
-    window.on_draw = on_draw
-    window.push_handlers(keys_pressed)
-
-    # window.on_key_press = on_key_press
-    # window.on_key_release = on_key_release
-    # window.on_mouse_press = on_mouse_press
-
-    arcade.run()
-
 def menu():
     arcade.set_background_color(arcade.color.BLACK)
-    arcade.draw_text("A Hard Game", WIDTH/2, HEIGHT/2, arcade.color.WHEAT,
+    arcade.draw_text("A Hard Game", WIDTH / 2, HEIGHT / 2, arcade.color.WHEAT,
                      font_size=30, bold=True, anchor_x="left")
-    arcade.draw_text("P to Play", WIDTH/2, HEIGHT/2 - 50, arcade.color.WHITE,
+    arcade.draw_text("P to Play", WIDTH / 2, HEIGHT / 2 - 50, arcade.color.WHITE,
                      font_size=25, bold=True, anchor_x="left")
-    arcade.draw_text("I for Instructions", WIDTH/2, HEIGHT/2 - 90, arcade.color.WHITE,
+    arcade.draw_text("I for Instructions", WIDTH / 2, HEIGHT / 2 - 90, arcade.color.WHITE,
                      font_size=25, bold=True, anchor_x="left")
-    arcade.draw_text("ESC to End Game", WIDTH/2, HEIGHT/2 - 130, arcade.color.WHITE,
+    arcade.draw_text("ESC to End Game", WIDTH / 2, HEIGHT / 2 - 130, arcade.color.WHITE,
                      font_size=25, bold=True, anchor_x="left")
+
 
 def instructions():
     arcade.set_background_color(arcade.color.BLACK)
     arcade.draw_text("How To Play", 20, HEIGHT - 50, arcade.color.WHITE,
-                     font_size=30, bold= True, anchor_x="left")
+                     font_size=30, bold=True, anchor_x="left")
     arcade.draw_text("""Your goal is to make it to the end without losing all your lives by 
 avoiding the spikes and pitfalls.
 
 Use the Left and Right arrow keys to move, and space bar to jump.
 To end the game and return to menu, press the ESC button.""",
                      20, HEIGHT - 100, arcade.color.WHITE, font_size=15, anchor_x="left")
+
 
 def game_screen1():
     global current_screen
@@ -161,7 +156,6 @@ def game_screen1():
 
     print(on_ground)
 
-
     # Spikes
     # if player_x >= 200:
     #     for a in range(4):
@@ -169,10 +163,6 @@ def game_screen1():
     #                                         spike1_x1 + 5, ground_rect_height1 + 30,
     #                                         spike1_x1 + 10, ground_rect_height1,
     #                                         arcade.color.DARK_BLUE_GRAY)
-
-
-
-
 
     # Next screen
     if player_x >= 750:
@@ -195,7 +185,6 @@ def game_screen2():
 
     # Platforms
     # arcade.draw_xywh_rectangle_filled()
-    
 
     # Check if Player is on Ground
     if player_y - player_height == ground_rect_y1 + ground_rect_height1:
@@ -205,7 +194,6 @@ def game_screen2():
 
     print(on_ground)
 
-
     # Spikes - sage colour
     # arcade.draw_triangle_filled()
 
@@ -213,9 +201,9 @@ def game_screen2():
     if player_x >= 750:
         current_screen = game_screen3()
 
+
 def game_screen3():
     pass
-
 
 
 if __name__ == '__main__':
