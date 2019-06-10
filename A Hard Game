@@ -82,7 +82,7 @@ def update(delta_time):
             if keys_pressed[arcade.key.UP]:
                 player_y += player_speedy
                 on_ground = False
-        if on_ground == False:
+        elif on_ground == False:
             player_y -= gravity
 
         if keys_pressed[arcade.key.RIGHT]:
