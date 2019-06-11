@@ -1,10 +1,12 @@
+import os
 from pyglet.window.key import KeyStateHandler
 import arcade
 
+file_path = os.path.dirname(os.path.abspath(__file__))
+os.chdir(file_path)
 
 WIDTH = 800
 HEIGHT = 450
-
 
 # Keys Pressed
 keys_pressed = KeyStateHandler()
@@ -13,12 +15,18 @@ keys_pressed = KeyStateHandler()
 # Screens
 current_screen = "menu"
 
+# Player Lives
+heart_x = 15
+heart_y = HEIGHT - 15
+# heart = arcade.Sprite('Sprites/Heart.png', center_x=heart_x, center_y=heart_y, scale=0.07)
+heart_list = arcade.SpriteList()
+
 # Player
 player_x = 30
 player_y = 210
 player_width = 5
 player_height = 10
-player_speedx = 3
+player_speedx = 5
 player_speedy = 25
 
 # Ground
@@ -35,8 +43,10 @@ ground_rect_height1 = 200
 
 # Spikes
 spike1_x1 = 255
+# spike = arcade.Sprite('Sprites/Spikes.png', center_x=, center_y=244, scale=0.09)
 spike1_x2 = 520
-
+# spike2 = arcade.Sprite('Sprites/Spikes.png', center_x=spike1_x2, center_y=244, scale=0.09)
+spike = 0
 
 # Gravity
 gravity = 17
@@ -63,6 +73,8 @@ def update(delta_time):
     elif current_screen == "game":
         if keys_pressed[arcade.key.BACKSPACE]:
             current_screen = "menu"
+        elif keys_pressed[arcade.key.ESCAPE]:
+            exit()
 
     # Player Movement
     if current_screen == "game":
@@ -83,7 +95,7 @@ def update(delta_time):
 
 def on_draw():
     arcade.start_render()
-    # Draw in here...
+    global heart_list
 
     if current_screen == "menu":
         menu()
@@ -91,6 +103,10 @@ def on_draw():
         instructions()
     elif current_screen == "game":
         game_screen1()
+        for heart_x in range(15, 200, 20):
+            heart = arcade.Sprite('Sprites/Heart.png', center_x=heart_x, center_y=heart_y, scale=0.07)
+            heart_list.append(heart)
+        heart_list.draw()
 
 
 
@@ -141,7 +157,7 @@ def game_screen1():
     global current_screen
     global player_x, player_y, player_width, player_height
     global on_ground
-    global spike1_x1
+    global spike1_x1, spike1_x2, spike
 
     arcade.set_background_color(arcade.color.WHITE_SMOKE)
 
@@ -157,16 +173,20 @@ def game_screen1():
 
     # Spikes
     if player_x >= 200:
-        for spike1_x1 in range(255, 315, 15):
-            arcade.draw_triangle_filled(spike1_x1, ground_rect_height1,
-                                            spike1_x1 + 5, ground_rect_height1 + 30,
-                                            spike1_x1 + 10, ground_rect_height1,
-                                            arcade.color.DARK_BLUE_GRAY)
-    for spike1_x2 in range(520, 565, 15):
-        arcade.draw_triangle_filled(spike1_x2, ground_rect_height1,
-                                   spike1_x2 + 5, ground_rect_height1 + 30,
-                                   spike1_x2+ 10, ground_rect_height1,
-                                   arcade.color.DARK_BLUE_GRAY)
+        for spike1_x1 in range(255, 300, 33):
+            spike = arcade.Sprite('Sprites/Spikes.png', center_x=spike1_x1, center_y=244, scale=0.09)
+            spike.draw()
+            # arcade.draw_triangle_filled(spike1_x1, ground_rect_height1,
+            #                                 spike1_x1 + 5, ground_rect_height1 + 30,
+            #                                 spike1_x1 + 10, ground_rect_height1,
+            #                                 arcade.color.DARK_BLUE_GRAY)
+    for x in range(520, 600, 15):
+        spike = arcade.Sprite('Sprites/Spikes.png', center_x=spike1_x2, center_y=244, scale=0.09)
+        spike.draw()
+        # arcade.draw_triangle_filled(spike1_x2, ground_rect_height1,
+        #                            spike1_x2 + 5, ground_rect_height1 + 30,
+        #                            spike1_x2+ 10, ground_rect_height1,
+        #                            arcade.color.DARK_BLUE_GRAY)
 
 
 
