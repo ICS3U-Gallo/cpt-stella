@@ -14,7 +14,7 @@ keys_pressed = KeyStateHandler()
 
 # Screens
 current_screen = "menu"
-game_screen = "game screen 2"
+game_screen = "game screen 1"
 
 # Player Lives
 heart_x = 20
