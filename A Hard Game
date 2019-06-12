@@ -11,7 +11,6 @@ HEIGHT = 450
 # Keys Pressed
 keys_pressed = KeyStateHandler()
 
-
 # Screens
 current_screen = "menu"
 game_screen = "game screen 1"
@@ -30,10 +29,15 @@ player_speedx = 5
 player_speedy = 25
 
 # Ground
-ground_rect_x1 = 0
-ground_rect_y1 = 0
+ground_rect_x1 = 15
+ground_rect_y1 = 185
 ground_rect_width1 = WIDTH
 ground_rect_height1 = 200
+ground_list = arcade.SpriteList()
+
+# Dirt
+dirt1_x1 = 15
+dirt1_y1 = 185
 
 # Walls
 
@@ -51,7 +55,7 @@ spike2_x2 = 470
 spike_list = arcade.SpriteList()
 
 # Gravity
-gravity = 17
+gravity = 15
 on_ground = True
 
 
@@ -80,12 +84,12 @@ def update(delta_time):
 
     # Player Movement
     if current_screen == "game":
-
+        player_y -= gravity
 
         if keys_pressed[arcade.key.UP]:
             player_y += player_speedy
-        elif keys_pressed[arcade.key.DOWN]:
-            player_y -= player_speedy
+        # elif keys_pressed[arcade.key.DOWN]:
+        #     player_y -= player_speedy
 
         if keys_pressed[arcade.key.RIGHT]:
             player_x += player_speedx
@@ -109,7 +113,6 @@ def on_draw():
             game_screen2()
         elif game_screen == "game screen 3":
             game_screen3()
-
 
 
 
@@ -162,7 +165,7 @@ To exit the game, press the ESC button.""",
 def game_screen1():
     global current_screen, game_screen
     global player_x, player_y, player_width, player_height, player_speedy, heart_list
-    global on_ground
+    global on_ground, ground_list
     global spike1_x1, spike1_x2, spike, spike_list
     global player, collisions
 
@@ -172,6 +175,7 @@ def game_screen1():
     player = arcade.Sprite('Sprites/Player.Face-Right.png', center_x=player_x, center_y=player_y, scale=0.1)
     player.draw()
 
+
     # Player Lives
     for heart_x in range(15, 200, 20):
         heart = arcade.Sprite('Sprites/Heart.png', center_x=heart_x, center_y=heart_y, scale=0.07)
@@ -179,13 +183,33 @@ def game_screen1():
     heart_list.draw()
 
     # Ground
-    arcade.draw_xywh_rectangle_filled(ground_rect_x1, ground_rect_y1,
-                                      ground_rect_width1, ground_rect_height1,
-                                      arcade.color.DARK_BROWN)
+    for ground_rect_x1 in range(15, WIDTH, 30):
+        ground = arcade.Sprite('Sprites/Ground.png', center_x= ground_rect_x1, center_y= ground_rect_y1, scale= 0.5)
+        ground_list.append(ground)
+        ground.draw()
+
+    for dirt1_x1 in range(15, WIDTH, 30):
+        for dirt1_y1 in range(0, 220, 30):
+            dirt = arcade.Sprite('Sprites/Dirt.png', center_x=dirt1_x1, center_y=dirt1_y1 - 30, scale=0.5)
+            dirt.draw()
+
+    # arcade.draw_xywh_rectangle_filled(ground_rect_x1, ground_rect_y1,
+    #                                   ground_rect_width1, ground_rect_height1,
+    #                                   arcade.color.DARK_BROWN)
 
     # Prevent Player from Going through Ground
+    landings = arcade.check_for_collision_with_list(player, ground_list)
 
+    for landing in landings:
+        player_y = 230
 
+    # On the Ground or not
+    if player_y >= ground_rect_y1 + 30:
+        on_ground = False
+    else:
+        on_ground = True
+
+    print(on_ground)
 
     # Spikes
     if player_x >= 210:
