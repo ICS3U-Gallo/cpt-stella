@@ -20,7 +20,6 @@ heart_list = arcade.SpriteList()
 
 # Player
 player_speedx = 8
-player_speedy = 25
 player = arcade.Sprite('Sprites/Player.Face-Right.png', center_x=30,
                        center_y=220, scale=0.1)
 
@@ -41,7 +40,7 @@ spike_list = arcade.SpriteList()
 
 
 def update(delta_time):
-    global player_speedy, player_speedx, player
+    global player_speedx, player
     global on_ground
     global current_screen
     global up_pressed, right_pressed, left_pressed
@@ -66,13 +65,13 @@ def update(delta_time):
     # Player Movement
     if current_screen == "game":
 
-        player.change_y -= 1.5
+        player.change_y -= 1
         player.center_y += player.change_y
 
         check_for_ground()
 
         if keys_pressed[arcade.key.UP] and on_ground == True:
-            player.change_y = 10
+            player.change_y = 13
 
         if keys_pressed[arcade.key.RIGHT]:
             player.center_x += player_speedx
@@ -118,7 +117,12 @@ def setup():
     # window.on_key_release = on_key_release
     # window.on_mouse_press = on_mouse_press
 
-    # Game Screen 1
+    setup_gamescreen1()
+
+    arcade.run()
+
+
+def setup_gamescreen1():
     # Create Hearts (Player Lives)
     for center_x in range(15, 200, 20):
         heart = arcade.Sprite('Sprites/Heart.png', center_x=center_x,
@@ -146,8 +150,6 @@ def setup():
     spike2 = arcade.Sprite('Sprites/Spike.png', center_x=520,
                            center_y=218, scale=0.09)
     spike_list.append(spike2)
-
-    arcade.run()
 
 
 def setup_gamescreen2():
@@ -210,27 +212,41 @@ def setup_gamescreen2():
 
 
 def check_for_ground():
-    global on_ground
-
-    ground_hits = arcade.check_for_collision_with_list(player, ground_list)
-
-    for ground_hit in ground_hits:
-        player.center_y =
+    global on_ground, gravity
 
     if game_screen == "game screen 1":
-        if player.center_y <= ground.center_y + 30:
+        if player.center_y <= 215:
             player.change_y = 0
+            player.center_y = 215
             on_ground = True
         else:
             on_ground = False
 
     if game_screen == "game screen 2":
-        if player.center_y <= ground.center_y + 30 and player.center_x <= 220:
+        # Ground on Left Side
+        if player.center_x <= 225 and 195 <= player.center_y <= 215:
             player.change_y = 0
+            player.center_y = 215
             on_ground = True
-        elif 280 <= player.center_x <= 330 and player.center_y <= platform.center_y + 30:
+        # Platform Parameters
+        elif 275 <= player.center_x <= 335 and 230 <= player.center_y <= 257:
             player.change_y = 0
+            player.center_y = 257
             on_ground = True
+        elif 385 <= player.center_x <= 445 and 280 <= player.center_y <= 314:
+            player.change_y = 0
+            player.center_y = 314
+            on_ground = True
+        elif 495 <= player.center_x <= 555 and 330 <= player.center_y <= 364:
+            player.change_y = 0
+            player.center_y = 364
+            on_ground = True
+        # Ground on Right Side
+        elif 650 <= player.center_x <= WIDTH and 350 <= player.center_y <= 364:
+            player.change_y = 0
+            player.center_y = 364
+            on_ground = True
+
         else:
             on_ground = False
 
