@@ -69,7 +69,9 @@ def update(delta_time):
         player.change_y -= 1.5
         player.center_y += player.change_y
 
-        if keys_pressed[arcade.key.UP] and on_ground() == True:
+        check_for_ground()
+
+        if keys_pressed[arcade.key.UP] and on_ground == True:
             player.change_y = 10
 
         if keys_pressed[arcade.key.RIGHT]:
@@ -167,17 +169,17 @@ def setup_gamescreen2():
         ground_list.append(ground2)
 
     # Create Dirt
-    for center_x in range(16, 225, 31):
+    for center_x in range(15, 225, 32):
         for center_y in range(0, 200, 30):
             dirt = arcade.Sprite('Sprites/Dirt.png', center_x=center_x,
                                  center_y=center_y, scale=0.5)
             dirt_list.append(dirt)
-        for center_y in range(300, HEIGHT, 30):
+        for center_y in range(300, HEIGHT + 30, 30):
             dirt = arcade.Sprite('Sprites/Dirt.png', center_x=center_x,
                                  center_y=center_y, scale=0.5)
             dirt_list.append(dirt)
 
-    for center_x in range(666, WIDTH, 31):
+    for center_x in range(665, WIDTH, 32):
         for center_y in range(0, 335, 30):
             dirt2 = arcade.Sprite('Sprites/Dirt.png', center_x=center_x,
                                   center_y=center_y, scale=0.5)
@@ -207,16 +209,30 @@ def setup_gamescreen2():
         spike_list.append(spike)
 
 
+def check_for_ground():
+    global on_ground
 
-# def on_ground():
-#     global on_ground
-# 
-#     if game_screen == "game screen 1":
-#          if player.center_y <= 230:
-#              player.change_y = 0
-#              on_ground = True
-#          else:
-#              on_ground = False
+    ground_hits = arcade.check_for_collision_with_list(player, ground_list)
+
+    for ground_hit in ground_hits:
+        player.center_y =
+
+    if game_screen == "game screen 1":
+        if player.center_y <= ground.center_y + 30:
+            player.change_y = 0
+            on_ground = True
+        else:
+            on_ground = False
+
+    if game_screen == "game screen 2":
+        if player.center_y <= ground.center_y + 30 and player.center_x <= 220:
+            player.change_y = 0
+            on_ground = True
+        elif 280 <= player.center_x <= 330 and player.center_y <= platform.center_y + 30:
+            player.change_y = 0
+            on_ground = True
+        else:
+            on_ground = False
 
 
 def menu():
