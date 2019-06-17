@@ -8,6 +8,9 @@ os.chdir(file_path)
 WIDTH = 800
 HEIGHT = 450
 
+# Restart
+restart = True
+
 # Keys Pressed
 keys_pressed = KeyStateHandler()
 
@@ -16,10 +19,14 @@ current_screen = "menu"
 game_screen = "game screen 1"
 
 # Player Lives
-heart_list = arcade.SpriteList()
+# heart_list = arcade.SpriteList()
+player_health = 100
+player_max_health = 100
+bar_width = 200
+bar_height = 20
 
 # Player
-player_speedx = 8
+# player_speedx = 5
 player = arcade.Sprite('Sprites/Player.Face-Right.png', center_x=30,
                        center_y=220, scale=0.1)
 
@@ -40,7 +47,7 @@ spike_list = arcade.SpriteList()
 
 
 def update(delta_time):
-    global player_speedx, player
+    global player
     global on_ground
     global current_screen
     global up_pressed, right_pressed, left_pressed
@@ -61,10 +68,16 @@ def update(delta_time):
             current_screen = "menu"
         elif keys_pressed[arcade.key.ESCAPE]:
             exit()
+    elif current_screen == "game over":
+        if keys_pressed[arcade.key.P]:
+            current_screen = "game"
+        elif keys_pressed[arcade.key.M]:
+            current_screen = "menu"
 
     # Player Movement
     if current_screen == "game":
 
+        player.change_x = 5
         player.change_y -= 1
         player.center_y += player.change_y
 
@@ -74,29 +87,41 @@ def update(delta_time):
             player.change_y = 13
 
         if keys_pressed[arcade.key.RIGHT]:
-            player.center_x += player_speedx
+            player.center_x += player.change_x
         elif keys_pressed[arcade.key.LEFT]:
-            player.center_x -= player_speedx
+            player.center_x -= player.change_x
 
 
 def on_draw():
     arcade.start_render()
-    global player
-    global game_screen
+    global player, player_health
+    global game_screen, current_screen
 
     if current_screen == "menu":
         menu()
     elif current_screen == "instructions":
         instructions()
+    elif current_screen == "game over":
+        game_over()
     elif current_screen == "game":
-        player.draw()
-
         if game_screen == "game screen 1":
             game_screen1()
         elif game_screen == "game screen 2":
             game_screen2()
         elif game_screen == "game screen 3":
             game_screen3()
+
+        if player_health == 0:
+            current_screen = "game over"
+
+        player.draw()
+        # Draw Health Bar
+        health_width = player_health / player_max_health * bar_width
+
+        arcade.draw_xywh_rectangle_filled(15, HEIGHT - 30, bar_width, bar_height, arcade.color.BLACK)
+        arcade.draw_xywh_rectangle_filled(15, HEIGHT - 30, health_width, bar_height, arcade.color.BOTTLE_GREEN)
+        arcade.draw_text(f"{player_health}/{player_max_health}", 20, HEIGHT - 30,
+                         arcade.color.WHITE, bold=True, font_size=10)
 
 
 def on_mouse_press(x, y, button, modifiers):
@@ -124,10 +149,10 @@ def setup():
 
 def setup_gamescreen1():
     # Create Hearts (Player Lives)
-    for center_x in range(15, 200, 20):
-        heart = arcade.Sprite('Sprites/Heart.png', center_x=center_x,
-                              center_y=HEIGHT - 15, scale=0.07)
-        heart_list.append(heart)
+    # for center_x in range(15, 200, 20):
+    #     heart = arcade.Sprite('Sprites/Heart.png', center_x=center_x,
+    #                           center_y=HEIGHT - 15, scale=0.07)
+    #     heart_list.append(heart)
 
     # create ground
     for center_x in range(15, WIDTH-15, 32):
@@ -205,15 +230,26 @@ def setup_gamescreen2():
 
 
     # Create Spikes
-    for center_x in range(238, 648, 32):
+    for center_x in range(238, 655, 32):
         spike = arcade.Sprite('Sprites/Spike.png', center_x=center_x,
                               center_y=18, scale=0.09)
         spike_list.append(spike)
 
 
-def check_for_ground():
-    global on_ground, gravity
+def setup_gamescreen3():
+    global ground_list, dirt_list, spike_list
 
+    ground_list = arcade.SpriteList()
+    dirt_list = arcade.SpriteList()
+    spike_list = arcade.SpriteList()
+
+    
+
+
+def check_for_ground():
+    global on_ground
+
+    # Prevent player from falling through ground
     if game_screen == "game screen 1":
         if player.center_y <= 215:
             player.change_y = 0
@@ -221,14 +257,19 @@ def check_for_ground():
             on_ground = True
         else:
             on_ground = False
+    # Prevent player from going off screen
+        if player.center_x < 15:
+            player.change_x = 0
+            player.center_x = 15
 
     if game_screen == "game screen 2":
+        # Prevent player from falling through ground/platform
         # Ground on Left Side
         if player.center_x <= 225 and 195 <= player.center_y <= 215:
             player.change_y = 0
             player.center_y = 215
             on_ground = True
-        # Platform Parameters
+        # Platform 
         elif 275 <= player.center_x <= 335 and 230 <= player.center_y <= 257:
             player.change_y = 0
             player.center_y = 257
@@ -246,10 +287,25 @@ def check_for_ground():
             player.change_y = 0
             player.center_y = 364
             on_ground = True
-
         else:
             on_ground = False
 
+        # Player doesn't move through walls
+        if (player.center_y >= 300 or player.center_y <= 185) and player.center_x <= 223:
+            player.change_x = 0
+            player.center_x = 233
+
+        if player.center_y <= 350 and player.center_x >= 645:
+            player.change_x = 0
+            player.center_x = 645
+
+        if player.center_x <= 225 and player.center_y >= 275:
+            player.change_y = 0
+            
+        # Prevent player from going off screen
+        if player.center_x < 15:
+            player.change_x = 0
+            player.center_x = 15
 
 def menu():
     arcade.set_background_color(arcade.color.BLACK)
@@ -284,14 +340,28 @@ To exit the game, press the ESC button.""",
                      font_size=15, anchor_x="center")
 
 
+def game_over():
+    arcade.set_background_color(arcade.color.BLACK)
+
+    arcade.draw_text("GAME OVER",
+                      WIDTH/2, HEIGHT/2, arcade.color.WHITE,
+                     font_size=50, bold=True, anchor_x="center")
+    arcade.draw_text("P to play again",
+                      WIDTH/2, HEIGHT/2 - 50, arcade.color.WHITE,
+                     font_size=20, bold=True, anchor_x="center")
+    arcade.draw_text("M to return to menu",
+                      WIDTH/2, HEIGHT/2 - 75, arcade.color.WHITE,
+                     font_size=20, bold=True, anchor_x="center")
+
+
 def game_screen1():
     global current_screen, game_screen
-    global heart_list
+    global player_health
 
     arcade.set_background_color(arcade.color.WHITE_SMOKE)
 
     # Player Lives
-    heart_list.draw()
+    # heart_list.draw()
 
     # Ground and Dirt
     ground_list.draw()
@@ -308,6 +378,7 @@ def game_screen1():
 
     for collision in collisions:
         player.center_x = 30
+        player_health -= 10
 
     # Next screen
     if game_screen == "game screen 1" and player.center_x >= 750:
@@ -318,8 +389,12 @@ def game_screen1():
 
 def game_screen2():
     global current_screen, game_screen
+    global player_health
 
     arcade.set_background_color(arcade.color.WHITE_SMOKE)
+
+    # Spikes
+    spike_list.draw()
 
     # Ground and Dirt
     ground_list.draw()
@@ -328,11 +403,8 @@ def game_screen2():
     # Platforms
     platform_list.draw()
 
-    # Spikes
-    spike_list.draw()
-
     # Player Lives
-    heart_list.draw()
+    # heart_list.draw()
 
     # Detect Collisions
     collisions = arcade.check_for_collision_with_list(player, spike_list)
@@ -340,11 +412,15 @@ def game_screen2():
     for collision in collisions:
         player.center_x = 30
         player.center_y = 220
+        player_health -= 10
+        break
 
 
     # Next screen
-    # if game_screen == "game screen 2" and player.center_x >= 750:
-    #     game_screen = game_screen3()
+    if game_screen == "game screen 2" and player.center_x >= 750:
+        setup_gamescreen3()
+        game_screen = "game screen 3"
+        player.center_x = 30
 
 
 def game_screen3():
