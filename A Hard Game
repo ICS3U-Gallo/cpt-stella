@@ -131,7 +131,7 @@ def on_draw():
         # Draw Health Bar
         health_width = player_health / player_max_health * bar_width
 
-        arcade.draw_xywh_rectangle_filled(15, HEIGHT - 30, 
+        arcade.draw_xywh_rectangle_filled(15, HEIGHT - 30,
                                           bar_width, bar_height,
                                           arcade.color.BLACK)
         arcade.draw_xywh_rectangle_filled(15, HEIGHT - 30,
@@ -375,8 +375,6 @@ def check_for_ground():
         elif player.center_x < 15:
             player.change_x = 0
             player.center_x = 15
-
-        print(player.center_x)
 
 
 def menu():
