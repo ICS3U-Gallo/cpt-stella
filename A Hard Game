@@ -71,9 +71,8 @@ def update(delta_time):
         if keys_pressed[arcade.key.M]:
             current_screen = "menu"
 
-    # Player Movement
     if current_screen == "game":
-
+        # Player Movement
         player.change_x = 5
         player.change_y -= 1
         player.center_y += player.change_y
