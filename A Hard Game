@@ -9,15 +9,13 @@ os.chdir(file_path)
 WIDTH = 800
 HEIGHT = 450
 
-# Restart
-restart = True
-
 # Keys Pressed
 keys_pressed = KeyStateHandler()
 
 # Screens
 current_screen = "menu"
 game_screen = "game screen 1"
+playing = True
 
 # Player Lives
 # heart_list = arcade.SpriteList()
@@ -53,7 +51,7 @@ goal_list = arcade.SpriteList()
 def update(delta_time):
     global player
     global on_ground
-    global current_screen, restart
+    global current_screen
     global up_pressed, right_pressed, left_pressed
 
     # Moving Between Screens
@@ -106,7 +104,7 @@ def update(delta_time):
 def on_draw():
     arcade.start_render()
     global player, player_health
-    global game_screen, current_screen, restart
+    global game_screen, current_screen
 
     if current_screen == "menu":
         menu()
@@ -140,10 +138,6 @@ def on_draw():
         arcade.draw_text(f"{player_health}/{player_max_health}",
                          20, HEIGHT - 30, arcade.color.WHITE,
                          bold=True, font_size=10)
-
-
-def on_mouse_press(x, y, button, modifiers):
-    pass
 
 
 def setup():
@@ -285,10 +279,10 @@ def setup_gamescreen3():
             dirt_list.append(dirt)
 
     # Spikes
-    for i in range(10):
+    for i in range(12):
         spike = arcade.Sprite('Sprites/Spike2.png',
-                              center_x=random.randrange(140, 680),
-                              center_y=HEIGHT + 10, scale=0.09)
+                              center_x=random.randrange(160, 680),
+                              center_y=random.randrange(HEIGHT + 10, HEIGHT + 300), scale=0.09)
         spike_list.append(spike)
 
     # Goal
@@ -404,7 +398,7 @@ avoiding the spikes and pitfalls.
 
 Use the Left and Right arrow keys to move, and Up arrow key to jump.
 
-To end the game and/or return to menu, press the BACKSPACE button.
+To return to menu, press the BACKSPACE button.
 To exit the game, press the ESC button.""",
                      WIDTH/2, HEIGHT/2, arcade.color.WHITE,
                      font_size=15, anchor_x="center")
