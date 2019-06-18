@@ -23,7 +23,6 @@ bar_width = 200
 bar_height = 20
 
 # Player
-# player_speedx = 5
 player = arcade.Sprite('Sprites/Player.Face-Right.png', center_x=30,
                        center_y=220, scale=0.1)
 
