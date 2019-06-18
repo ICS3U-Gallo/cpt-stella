@@ -17,7 +17,6 @@ current_screen = "menu"
 game_screen = "game screen 1"
 
 # Player Lives
-# heart_list = arcade.SpriteList()
 player_health = 100
 player_max_health = 100
 bar_width = 200
@@ -159,12 +158,6 @@ def setup():
 
 
 def setup_gamescreen1():
-    # Create Hearts (Player Lives)
-    # for center_x in range(15, 200, 20):
-    #     heart = arcade.Sprite('Sprites/Heart.png', center_x=center_x,
-    #                           center_y=HEIGHT - 15, scale=0.07)
-    #     heart_list.append(heart)
-
     # create ground
     for center_x in range(15, WIDTH-15, 32):
         ground = arcade.Sprite('Sprites/Ground.png', center_x=center_x,
@@ -431,9 +424,6 @@ def game_screen1():
 
     arcade.set_background_color(arcade.color.WHITE_SMOKE)
 
-    # Player Lives
-    # heart_list.draw()
-
     # Ground and Dirt
     ground_list.draw()
     dirt_list.draw()
@@ -473,9 +463,6 @@ def game_screen2():
 
     # Platforms
     platform_list.draw()
-
-    # Player Lives
-    # heart_list.draw()
 
     # Detect Collisions
     collisions = arcade.check_for_collision_with_list(player, spike_list)
